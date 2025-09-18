@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as Location from "expo-location";
+import { useCallback, useEffect, useState } from "react";
+import { config, validateConfig } from "../config/environment";
 import NearbyPlacesService, {
 	Place,
 	PlaceSearchOptions,
 } from "../services/nearbyPlacesService";
-const MAPBOX_API_KEY = "your_mapbox_api_key"; // Replace with your key
+validateConfig(); // Replace with your key
 export interface UseNearbyPlacesReturn {
 	// Location state
 	currentLocation: Location.LocationObject | null;
@@ -28,16 +29,16 @@ export const useNearbyPlaces = (): UseNearbyPlacesReturn => {
 	const [locationLoading, setLocationLoading] = useState(false);
 	const [locationError, setLocationError] = useState<string | null>(null);
 	const [searchOptions, setSearchOptions] = useState<PlaceSearchOptions>({});
-	const placesService = new NearbyPlacesService(MAPBOX_API_KEY);
+	const placesService = new NearbyPlacesService(config.MAPBOX_ACCESS_TOKEN);
 	// Query for places based on current location
 	const {
 		data: places = [],
 		isLoading: placesLoading,
 		error: placesError,
 		refetch: refetchPlaces,
-	} = useQuery<Place[]>(
-		["nearby-places", currentLocation?.coords, searchOptions],
-		() => {
+	} = useQuery<Place[]>({
+		queryKey: ["nearby-places", currentLocation?.coords, searchOptions],
+		queryFn: () => {
 			if (!currentLocation?.coords) {
 				throw new Error("Location required for places search");
 			}
@@ -50,12 +51,10 @@ export const useNearbyPlaces = (): UseNearbyPlacesReturn => {
 				searchOptions
 			);
 		},
-		{
-			enabled: !!currentLocation?.coords,
-			retry: 2,
-			staleTime: 5 * 60 * 1000, // 5 minutes
-		}
-	);
+		enabled: !!currentLocation?.coords,
+		retry: 2,
+		staleTime: 5 * 60 * 1000, // 5 minutes
+	});
 	const refreshLocation = useCallback(async () => {
 		try {
 			setLocationLoading(true);

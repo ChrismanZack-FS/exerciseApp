@@ -1,16 +1,15 @@
-import React, { useState, useRef } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useRef, useState } from "react";
 import {
-	View,
-	Text,
-	StyleSheet,
-	TouchableOpacity,
-	FlatList,
 	ActivityIndicator,
-	Alert,
+	FlatList,
 	Platform,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
 } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
-import { Ionicons } from "@expo/vector-icons";
 import { useNearbyPlaces } from "../hooks/useNearbyPlaces";
 import { PlaceCard } from "./PlaceCard";
 import { PlaceDetailsModal } from "./PlaceDetailsModal";
