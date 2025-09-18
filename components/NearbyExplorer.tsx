@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 import { useNearbyPlaces } from "../hooks/useNearbyPlaces";
+import { Place } from "../services/nearbyPlacesService";
+import { CameraModal } from "./CameraModal";
 import { PlaceCard } from "./PlaceCard";
 import { PlaceDetailsModal } from "./PlaceDetailsModal";
-import { CameraModal } from "./CameraModal";
-import { Place } from "../services/nearbyPlacesService";
 export const NearbyExplorer: React.FC = () => {
 	const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 	const [showPlaceDetails, setShowPlaceDetails] = useState(false);
