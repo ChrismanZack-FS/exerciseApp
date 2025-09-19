@@ -10,9 +10,10 @@ import {
 	View,
 } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { CameraModal } from "./CameraModal";
 import { useNearbyPlaces } from "../hooks/useNearbyPlaces";
 import { Place } from "../services/nearbyPlacesService";
-import { CameraModal } from "./CameraModal";
 import { PlaceCard } from "./PlaceCard";
 import { PlaceDetailsModal } from "./PlaceDetailsModal";
 export const NearbyExplorer: React.FC = () => {
@@ -107,128 +108,130 @@ export const NearbyExplorer: React.FC = () => {
 		);
 	}
 	return (
-		<View style={styles.container}>
-			{/* Header */}
-			<View style={styles.header}>
-				<Text style={styles.title}>Nearby Explorer</Text>
-				<View style={styles.headerControls}>
-					<TouchableOpacity
-						style={[
-							styles.viewModeButton,
-							viewMode === "map" && styles.viewModeButtonActive,
-						]}
-						onPress={() => setViewMode("map")}
-					>
-						<Ionicons
-							name="map"
-							size={20}
-							color={viewMode === "map" ? "white" : "#007AFF"}
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={[
-							styles.viewModeButton,
-							viewMode === "list" && styles.viewModeButtonActive,
-						]}
-						onPress={() => setViewMode("list")}
-					>
-						<Ionicons
-							name="list"
-							size={20}
-							color={viewMode === "list" ? "white" : "#007AFF"}
-						/>
-					</TouchableOpacity>
-				</View>
-			</View>
-			{/* Category Filter */}
-			<View style={styles.categoryFilter}>
-				{["restaurant", "cafe", "shop", "attraction"].map((category) => (
-					<TouchableOpacity
-						key={category}
-						style={styles.categoryButton}
-						onPress={() => handleCategoryFilter(category)}
-					>
-						<Text style={styles.categoryButtonText}>
-							{category.charAt(0).toUpperCase() + category.slice(1)}s
-						</Text>
-					</TouchableOpacity>
-				))}
-			</View>
-			{/* Content */}
-			<View style={styles.content}>
-				{viewMode === "map" ? (
-					<View style={styles.mapContainer}>
-						{mapRegion && currentLocation && (
-							<MapView
-								ref={mapRef}
-								style={styles.map}
-								initialRegion={mapRegion}
-								showsUserLocation={Platform.OS !== "web"}
-								showsMyLocationButton={false}
-							>
-								{/* User location marker for web */}
-								{Platform.OS === "web" && currentLocation.coords && (
-									<Marker
-										coordinate={{
-											latitude: currentLocation.coords.latitude,
-											longitude: currentLocation.coords.longitude,
-										}}
-										title="Your Location"
-										pinColor="blue"
-									/>
-								)}
-								{/* Place markers */}
-								{places.map((place) => (
-									<Marker
-										key={place.id}
-										coordinate={place.coordinates}
-										title={place.name}
-										description={place.address}
-										onPress={() => handleMapMarkerPress(place)}
-									/>
-								))}
-							</MapView>
-						)}
-						{/* Map controls */}
+		<SafeAreaView style={{ flex: 1 }}>
+			<View style={styles.container}>
+				{/* Header */}
+				<View style={styles.header}>
+					<Text style={styles.title}>Nearby Explorer</Text>
+					<View style={styles.headerControls}>
 						<TouchableOpacity
-							style={styles.centerButton}
-							onPress={centerOnUser}
+							style={[
+								styles.viewModeButton,
+								viewMode === "map" && styles.viewModeButtonActive,
+							]}
+							onPress={() => setViewMode("map")}
 						>
-							<Ionicons name="locate" size={24} color="white" />
+							<Ionicons
+								name="map"
+								size={20}
+								color={viewMode === "map" ? "white" : "#007AFF"}
+							/>
+						</TouchableOpacity>
+						<TouchableOpacity
+							style={[
+								styles.viewModeButton,
+								viewMode === "list" && styles.viewModeButtonActive,
+							]}
+							onPress={() => setViewMode("list")}
+						>
+							<Ionicons
+								name="list"
+								size={20}
+								color={viewMode === "list" ? "white" : "#007AFF"}
+							/>
 						</TouchableOpacity>
 					</View>
-				) : (
-					<FlatList
-						data={places}
-						renderItem={renderPlaceCard}
-						keyExtractor={(item) => item.id}
-						contentContainerStyle={styles.listContainer}
-						refreshing={placesLoading}
-						onRefresh={() => searchPlaces()}
-						showsVerticalScrollIndicator={false}
-					/>
-				)}
-				{/* Loading overlay */}
-				{placesLoading && (
-					<View style={styles.loadingOverlay}>
-						<ActivityIndicator size="large" color="#007AFF" />
-						<Text style={styles.loadingText}>Finding nearby places...</Text>
-					</View>
-				)}
+				</View>
+				{/* Category Filter */}
+				<View style={styles.categoryFilter}>
+					{["restaurant", "cafe", "shop", "attraction"].map((category) => (
+						<TouchableOpacity
+							key={category}
+							style={styles.categoryButton}
+							onPress={() => handleCategoryFilter(category)}
+						>
+							<Text style={styles.categoryButtonText}>
+								{category.charAt(0).toUpperCase() + category.slice(1)}s
+							</Text>
+						</TouchableOpacity>
+					))}
+				</View>
+				{/* Content */}
+				<View style={styles.content}>
+					{viewMode === "map" ? (
+						<View style={styles.mapContainer}>
+							{mapRegion && currentLocation && (
+								<MapView
+									ref={mapRef}
+									style={styles.map}
+									initialRegion={mapRegion}
+									showsUserLocation={Platform.OS !== "web"}
+									showsMyLocationButton={false}
+								>
+									{/* User location marker for web */}
+									{Platform.OS === "web" && currentLocation.coords && (
+										<Marker
+											coordinate={{
+												latitude: currentLocation.coords.latitude,
+												longitude: currentLocation.coords.longitude,
+											}}
+											title="Your Location"
+											pinColor="blue"
+										/>
+									)}
+									{/* Place markers */}
+									{places.map((place) => (
+										<Marker
+											key={place.id}
+											coordinate={place.coordinates}
+											title={place.name}
+											description={place.address}
+											onPress={() => handleMapMarkerPress(place)}
+										/>
+									))}
+								</MapView>
+							)}
+							{/* Map controls */}
+							<TouchableOpacity
+								style={styles.centerButton}
+								onPress={centerOnUser}
+							>
+								<Ionicons name="locate" size={24} color="white" />
+							</TouchableOpacity>
+						</View>
+					) : (
+						<FlatList
+							data={places}
+							renderItem={renderPlaceCard}
+							keyExtractor={(item) => item.id}
+							contentContainerStyle={styles.listContainer}
+							refreshing={placesLoading}
+							onRefresh={() => searchPlaces()}
+							showsVerticalScrollIndicator={false}
+						/>
+					)}
+					{/* Loading overlay */}
+					{placesLoading && (
+						<View style={styles.loadingOverlay}>
+							<ActivityIndicator size="large" color="#007AFF" />
+							<Text style={styles.loadingText}>Finding nearby places...</Text>
+						</View>
+					)}
+				</View>
+				{/* Modals */}
+				<PlaceDetailsModal
+					visible={showPlaceDetails}
+					place={selectedPlace}
+					onClose={() => setShowPlaceDetails(false)}
+					onTakePhoto={handleTakePhoto}
+				/>
+				<CameraModal
+					visible={showCamera}
+					onClose={() => setShowCamera(false)}
+					place={selectedPlace}
+				/>
 			</View>
-			{/* Modals */}
-			<PlaceDetailsModal
-				visible={showPlaceDetails}
-				place={selectedPlace}
-				onClose={() => setShowPlaceDetails(false)}
-				onTakePhoto={handleTakePhoto}
-			/>
-			<CameraModal
-				visible={showCamera}
-				onClose={() => setShowCamera(false)}
-				place={selectedPlace}
-			/>
-		</View>
+		</SafeAreaView>
 	);
 };
 const styles = StyleSheet.create({

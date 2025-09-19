@@ -1,5 +1,10 @@
 import * as Location from "expo-location";
-import axios from "axios";
+
+import { config } from "../config/environment";
+import createApiClient from "../services/apiClient";
+
+const apiClient = createApiClient(config.MAPBOX_BASE_URL);
+
 export interface Place {
 	id: string;
 	name: string;
@@ -22,7 +27,6 @@ export interface PlaceSearchOptions {
 }
 class NearbyPlacesService {
 	private apiKey: string;
-	private baseUrl: string = "https://api.mapbox.com/geocoding/v5/mapbox.places";
 	constructor(apiKey: string) {
 		this.apiKey = apiKey;
 	}
@@ -43,18 +47,20 @@ class NearbyPlacesService {
 		coordinates: { latitude: number; longitude: number },
 		options: PlaceSearchOptions = {}
 	): Promise<Place[]> {
-		const { category = "restaurant", radius = 1000, limit = 20 } = options;
+		const { category = "restaurant", limit = 20 } = options;
 		try {
-			const response = await axios.get(`${this.baseUrl}/${category}.json`, {
-				params: {
-					proximity: `${coordinates.longitude},${coordinates.latitude}`,
-					access_token: this.apiKey,
-					limit,
-					radius,
-					types: "poi",
-				},
-				timeout: 10000,
-			});
+			const response = await apiClient.get(
+				`/geocoding/v5/mapbox.places/${category}.json`,
+				{
+					params: {
+						proximity: `${coordinates.longitude},${coordinates.latitude}`,
+						access_token: this.apiKey,
+						limit,
+						types: "poi",
+					},
+					timeout: 10000,
+				}
+			);
 			return response.data.features
 				.map((feature: any) => {
 					const place: Place = {
@@ -82,12 +88,15 @@ class NearbyPlacesService {
 	}
 	async getPlaceDetails(placeId: string): Promise<Place | null> {
 		try {
-			const response = await axios.get(`${this.baseUrl}/place.json`, {
-				params: {
-					id: placeId,
-					access_token: this.apiKey,
-				},
-			});
+			const response = await apiClient.get(
+				`/geocoding/v5/mapbox.places/place.json`,
+				{
+					params: {
+						id: placeId,
+						access_token: this.apiKey,
+					},
+				}
+			);
 			const feature = response.data.features[0];
 			if (!feature) return null;
 			return {

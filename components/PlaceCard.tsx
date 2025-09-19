@@ -13,18 +13,18 @@ export const PlaceCard: React.FC<PlaceCardProps> = ({
 	onPress,
 	onTakePhoto,
 }) => (
-	<TouchableOpacity style={styles.card} onPress={onPress}>
-		<View>
+	<View style={styles.card}>
+		<TouchableOpacity onPress={onPress} style={styles.infoArea}>
 			<Text style={styles.name}>{place.name}</Text>
 			<Text style={styles.address}>{place.address}</Text>
 			{place.distance !== undefined && (
 				<Text style={styles.distance}>{place.distance.toFixed(0)} m away</Text>
 			)}
-			<TouchableOpacity style={styles.photoButton} onPress={onTakePhoto}>
-				<Text style={styles.photoButtonText}>Take Photo</Text>
-			</TouchableOpacity>
-		</View>
-	</TouchableOpacity>
+		</TouchableOpacity>
+		<TouchableOpacity style={styles.photoButton} onPress={onTakePhoto}>
+			<Text style={styles.photoButtonText}>Take Photo</Text>
+		</TouchableOpacity>
+	</View>
 );
 
 const styles = StyleSheet.create({
@@ -38,6 +38,12 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 4,
 		elevation: 2,
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+	infoArea: {
+		flex: 1,
 	},
 	name: {
 		fontSize: 18,

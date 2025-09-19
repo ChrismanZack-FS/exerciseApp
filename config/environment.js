@@ -2,19 +2,19 @@ import Constants from "expo-constants";
 // Environment-specific configuration
 const ENV = {
 	development: {
-		MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN,
+		MAPBOX_ACCESS_TOKEN: process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN,
 		MAPBOX_BASE_URL: "https://api.mapbox.com",
 		SOCIAL_API_BASE_URL: "http://localhost:3000/api",
 		DEBUG_API_CALLS: true,
 	},
 	staging: {
-		MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN,
+		MAPBOX_ACCESS_TOKEN: process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN,
 		MAPBOX_BASE_URL: "https://api.mapbox.com",
 		SOCIAL_API_BASE_URL: "https://staging-api.example.com/api",
 		DEBUG_API_CALLS: false,
 	},
 	production: {
-		MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN,
+		MAPBOX_ACCESS_TOKEN: process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN,
 		MAPBOX_BASE_URL: "https://api.mapbox.com",
 		SOCIAL_API_BASE_URL: "https://api.example.com/api",
 		DEBUG_API_CALLS: false,

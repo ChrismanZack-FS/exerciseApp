@@ -1,7 +1,7 @@
 import { NearbyExplorer } from "@/components/NearbyExplorer";
 import { StyleSheet } from "react-native";
 
-export default function HomeScreen() {
+export default function IndexScreen() {
 	return <NearbyExplorer />;
 }
 
